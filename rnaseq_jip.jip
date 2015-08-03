@@ -1,0 +1,123 @@
+#!/usr/bin/env jip
+#
+# Run the full RNA Sequence pipeline
+#
+# usage:
+#     rnaseq_jip.jip -c <cfg> -i <input>... -o <mapping_dir> -q <quantification_dir> -a <annotation> -t <threads> [-p <prefix>] [-d] [-s] [-l <lims>] [--noFlux] [--noPCR]
+#
+# Inputs:
+#  -i, --input <input>                           The first mate fastq input file
+#  -c, --cfg <cfg>                               The gemtools config file
+#  -a, --annotation <annotation>                 Explicitly set the annotation
+#  -o, --mapping_dir <mapping_dir>               Output directory
+#  -q, --quantification_dir <quantification_dir> Quantification directory
+#
+# Options:
+#  -d, --directional                             Use directional protocol support
+#  -s, --single_end                              Single end sequencing
+#  -p, --prefix <prefix>                         Optional job prefix
+#  -t, --threads <threads>                       Number of threads
+#  -l, --lims <lims>                             Lims temporary file to store the mapping directory which are located the data to be updated at lims
+#  --noFlux                                      Not run flux quantification
+#  --noPCR                                       No run Mark Duplicates
+
+module load SAMBAMBA/0.5.4
+module load SAMTOOLS
+
+#%begin pipeline
+import os
+import os.path
+import json
+import sys
+
+
+#0.COMMON VARIABLES
+#0.1 Path standard error standard output
+pathOutErr = args['mapping_dir'] + "/out_mn/"
+if not os.path.exists(pathOutErr):
+    os.makedirs(pathOutErr)
+
+#0.2 Create quantification dir
+if not args['noFlux']:
+    if not os.path.exists(args['quantification_dir']):
+        os.makedirs(args['quantification_dir'])
+
+#1.CREATE GEMTOOLS JOBS
+jobGTList = []
+bamMappingList = []
+bamMappingFilterList = []
+
+for fastq in args['input']:
+    name = os.path.basename(fastq)
+    name = name[:name.index(".")-2] 
+    
+    gtJob = job('gemtools_'+ name,time="10:59:59",threads=args["threads"],\
+                         log=pathOutErr + "gemtools_" + name + ".err",\
+                         out=pathOutErr + "gemtools_" + name + ".out").\
+                         run('gemtools_jip',input=fastq,cfg=args['cfg'],threads=args["threads"],\
+                         name=name,output_dir=args['mapping_dir'])
+
+    #Append job to the list of jobs
+    jobGTList.append(gtJob)
+
+    #Register output directory
+    #bamMappingList.append("%s/%s.bam" % (args['mapping_dir'],name))
+    bamMappingList.append(gtJob.out_bam)
+    bamMappingFilterList.append("%s/%s.filtered.bam" % (args['mapping_dir'],name))
+
+#2. CREATE FLUX QUANTIFICATIONS JOBS
+if not args['noFlux']:
+    for gtJob,bam in zip(jobGTList,bamMappingFilterList):
+        name = os.path.basename(bam)
+        name = name[:name.index(".")-1] 
+   
+        fluxJob = None
+        quantification_file = "%s/%s.gtf.gz" % (args['quantification_dir'],name)
+
+        if args['single_end']:
+            if args['directional']:
+                fluxJob = job('flux_'+ name,time="05:59:59",threads=args["threads"],\
+                         log=pathOutErr + "flux_" + name + ".err",\
+                         out=pathOutErr + "flux_" + name + ".out").\
+                         run('flux_jip',input=gtJob.out_filtered_bam,threads=args["threads"],\
+                         output=quantification_file,single_end=True,annotation=args['annotation'],directional=True)
+            else:
+                fluxJob = job('flux_'+ name,time="05:59:59",threads=args["threads"],\
+                         log=pathOutErr + "flux_" + name + ".err",\
+                         out=pathOutErr + "flux_" + name + ".out").\
+                         run('flux_jip',input=gtJob.out_filtered_bam,threads=args["threads"],\
+                         output=quantification_file,annotation=args['annotation'],single_end=True)
+    
+        else:
+            if args['directional']:
+                fluxJob = job('flux_'+ name,time="05:59:59",threads=args["threads"],\
+                         log=pathOutErr + "flux_" + name + ".err",\
+                         out=pathOutErr + "flux_" + name + ".out").\
+                         run('flux_jip',input=gtJob.out_filtered_bam,threads=args["threads"],\
+                         output=quantification_file,annotation=args['annotation'],directional=True)   
+            else:
+                fluxJob = job('flux_'+ name,time="05:59:59",threads=args["threads"],\
+                         log=pathOutErr + "flux_" + name + ".err",\
+                         out=pathOutErr + "flux_" + name + ".out").\
+                         run('flux_jip',input=gtJob.out_filtered_bam,threads=args["threads"],\
+                         output=quantification_file,annotation=args['annotation'])  
+
+#3. CREATE REMOVE DUPLICATES
+if not args['noPCR']:
+    if not args['lims']:
+        duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList) 
+    else:
+        duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims']) 
+
+
+    
+
+    
+
+
+
+
+
+
+
+

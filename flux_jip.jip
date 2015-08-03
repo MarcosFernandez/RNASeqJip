@@ -1,0 +1,41 @@
+#!/usr/bin/env jip
+#
+# Run quantification using flux capacitor
+#
+# Usage:
+#     flux_jip.jip -i <input> -t <threads> -o <output> -a <annotation> [-s <single_end>] [-d] [-p <prefix>]
+#
+# Inputs:
+#  -i, --input <input>             Indexed and sorted bam file
+#  -a, --annotation <annotation>   Annotation gtf file, Explicitly set the annotation
+#
+# Options:
+#  -d, --directional               Use directional protocol support
+#  -t, --threads <threads>         Number of threads
+#  -s, --single_end <single_end>   Single End Sequencing 
+#  -p, --prefix <prefix>           Optional job prefix
+#
+# Outputs:
+#  -o, --output <output>           The counts gtf
+
+
+se=`echo ${single_end|arg("yes")|else("no")}`
+
+if [ "$se" == "yes" ];
+then 
+    flux-capacitor -i ${input} -a ${annotation} \
+               -m ${directional|arg('SINGLE --read-strand SENSE')} \
+               --weighted-count --threads ${threads} \
+               --force | gzip -c > ${output}
+else
+    flux-capacitor -i ${input} -a ${annotation} \
+               --sam-mates-only \
+               -m PAIRED${directional|arg('_STRANDED --read-strand MATE2_SENSE')} \
+               --weighted-count --threads ${threads} \
+               --force | gzip -c > ${output}
+fi
+
+
+ 
+
+

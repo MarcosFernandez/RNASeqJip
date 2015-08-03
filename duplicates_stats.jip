@@ -1,0 +1,198 @@
+#!/usr/bin/env jip
+# Run MarkDuplicates to generate Duplication stats from a set of BAM alignment files with the name format. 
+#
+# Usage:
+#    duplicates_stats.jip -b <bam>... [-l <lims>]
+#
+# Inputs:
+#  -b, --bam <bam>...    List of bam input files
+#
+# Options:
+#  -l, --lims <lims>     Lims temporary file to store the directory to update at the lims system
+#
+
+module load SAMBAMBA/0.5.4
+
+#%begin pipeline
+import os
+import os.path
+import json
+import sys
+import subprocess
+
+def checkBamFile(nameBam=None):
+    '''Checks if the BAM file complies Name format Standard SAMPLE_LIBRARY_FLOWCELL_LANE...'''
+    import re
+    fields = re.split('_',nameBam)
+    if fields < 4:
+        return False
+    return True
+
+def getSampleName(nameBam=None):
+    ''' Return sample name from a Bam which complies the name format SAMPLE_LIBRARY_FLOWCELL_LANE...''' 
+    import re 
+    return re.split('_',nameBam)[0]
+
+def getLibraryName(nameBam=None):
+    ''' Return library name from a Bam which complies the name format SAMPLE_LIBRARY_FLOWCELL_LANE...''' 
+    import re
+    return re.split('_',nameBam)[1]
+
+def getFlowcellName(nameBam=None):
+    ''' Return flowcell name from a Bam which complies the name format SAMPLE_LIBRARY_FLOWCELL_LANE...''' 
+    import re
+    return re.split('_',nameBam)[2]
+
+def getLaneName(nameBam=None):
+    ''' Return lane name from a Bam which complies the name format SAMPLE_LIBRARY_FLOWCELL_LANE...''' 
+    import re
+    return re.split('_',nameBam)[3]
+
+
+
+
+#0.Global variables
+samplesDict = {}
+jip_dir = os.path.dirname(os.path.realpath(__file__))
+create_doc = jip_dir + "/create_doc.py"
+
+#1.Process al bam files
+for bamFile in args['bam']:
+    pathBamFile = os.path.abspath(bamFile)
+    cleanName = os.path.basename(bamFile)
+
+    if checkBamFile(cleanName):
+        sample = getSampleName(cleanName)
+        library = getLibraryName(cleanName)
+        
+        if sample in samplesDict.keys():
+            if library in samplesDict[sample].keys():
+                samplesDict[sample][library].append(pathBamFile)
+            else:
+                samplesDict[sample][library] = [pathBamFile]
+        else:
+            newLibrary = {}
+            newLibrary[library] = [pathBamFile]
+            samplesDict[sample] = newLibrary
+
+
+#2.Create Markduplicates job per each set of bams for a given library
+
+jobList = []
+
+for sample in samplesDict.keys():
+    for library in samplesDict[sample].keys():
+        bamFiles = samplesDict[sample][library]
+        directory = os.path.dirname(bamFiles[0])    
+        bamToCheck = directory + "/" + sample + "." + library + ".merged.sample.libs.bam"
+        bamDuplicates = directory  + "/" + sample + "." + library + ".rmdup.sample.libs.bam"
+        flagstat = directory  + "/" + sample + "." + library + ".rmdup.sample.libs.flagstat"
+
+        bamSorted = []
+        sortJobList = []
+        if len(bamFiles) > 1:
+
+            for bFile in bamFiles:
+                flowcell = getFlowcellName(os.path.basename(bFile))
+                lane = getLaneName(os.path.basename(bFile))           
+                laneFlagstat = directory  + "/" + sample + "." + library + "." + flowcell + "." + lane + ".rmdup.lane.flagstat"
+
+                #Flagstats
+                stats = job("flagstat", time="1h",threads="1",\
+                log=directory + "/" +  "flagstat.lane." + sample + "." + library + "." + flowcell + "." + lane + ".err", \
+                out=directory + "/" +  "flagstat.lane." + sample + "." + library + "." + flowcell + "." + lane + ".out").\
+                bash("sambamba flagstat " + bFile + " > " + flagstat, outfile=laneFlagstat)
+
+                #Sort
+                sort = job("sort", time="3h",threads="2",temp=True,\
+                log=directory + "/" +  "sort.lane." + sample + "." + library + "." + flowcell + "." + lane + ".err", \
+                out=directory + "/" +  "sort.lane." + sample + "." + library + "." + flowcell + "." + lane + ".out").\
+                bash("sambamba sort --tmpdir=$TMPDIR -t 2 -o " + bFile + ".sort " + bFile )
+
+                bamSorted.append(bFile + ".sort ")
+                sortJobList.append(sort)
+
+               
+            bams = " ".join(["%s" % b for b in bamSorted])
+
+            #Merging job
+            merged = job("merge." + sample + "." + library, time="8h",threads="2",temp=True,\
+            log=directory + "/" +  "merge" + sample + "." + library + ".err", \
+            out=directory + "/" +  "merge" + sample + "." + library + ".out").\
+            bash("sambamba merge -t 2 " + bamToCheck + " " +  bams,
+                 outfile=bamToCheck)
+      
+            #MarkDuplicates
+            dups = job("rmDup", time="3h",threads="2",\
+            log=directory + "/" +  "rmdup." + sample + "." + library + ".err",temp=True, \
+            out=directory + "/" +  "rmdup." + sample + "." + library + ".out").\
+            bash("sambamba markdup --tmpdir=$TMPDIR -t 2 " +  bamToCheck + " " + bamDuplicates, outfile=bamDuplicates) 
+
+            #Flagstats
+            stats = job("flagstat", time="1h",threads="1",\
+            log=directory + "/" +  "flagstat." + sample + "." + library + ".err", \
+            out=directory + "/" +  "flagstat." + sample + "." + library + ".out").\
+            bash("sambamba flagstat " + bamDuplicates + " > " + flagstat, outfile=flagstat)
+
+            #HTML Documentation and JSON Creation
+            command = "%s --dup_stats %s/*rmdup.sample.libs.flagstat;" %(create_doc,directory)
+            
+            docJsonHtml = job("jsonHtml", time="00:05:00",threads="1",\
+            log=directory + "/" +  "jsonHtml.err", \
+            out=directory + "/" +  "jsonHtml.out").\
+            bash(command)  
+
+            for sortJob in sortJobList:
+                sortJob >> merged
+
+
+            jobDependencies = merged >> dups >> stats >> docJsonHtml
+            jobList.append(jobDependencies)
+
+        else:     
+            #MarkDuplicates
+            dups = job("rmDup", time="3h",threads="2",\
+            log=directory + "/" +  "rmdup." + sample + "." + library + ".err",temp=True, \
+            out=directory + "/" +  "rmdup." + sample + "." + library + ".out").\
+            bash("sambamba markdup --tmpdir=$TMPDIR -t 2 " +  bamFiles[0] + " " + bamDuplicates, outfile=bamDuplicates) 
+
+            #Flagstats
+            flowcell = getFlowcellName(os.path.basename(bamFiles[0]))
+            lane = getLaneName(os.path.basename(bamFiles[0])) 
+            laneFlagstat = directory  + "/" + sample + "." + library + "." + flowcell + "." + lane + ".rmdup.lane.flagstat"
+            
+            stats = job("flagstat", time="1h",threads="1",\
+            log=directory + "/" +  "flagstat." + sample + "." + library + ".err", \
+            out=directory + "/" +  "flagstat." + sample + "." + library + ".out").\
+            bash("sambamba flagstat " + bamDuplicates + " > " + flagstat + "; cp " + flagstat + " " + laneFlagstat, outfile=flagstat)
+
+            #HTML Documentation and JSON Creation
+            command = "%s --dup_stats %s/*rmdup.sample.libs.flagstat;" %(create_doc,directory)
+            
+            docJsonHtml = job("jsonHtml", time="00:05:00",threads="1",\
+            log=directory + "/" +  "jsonHtml.err", \
+            out=directory + "/" +  "jsonHtml.out").\
+            bash(command) 
+
+            jobDependencies = dups >> stats >> docJsonHtml
+            jobList.append(jobDependencies)
+
+#3.LIMS NOTIFICATION
+
+if args['lims']:
+    command = "chmod 770 %s;" %(args['lims'])
+    command = "%s echo %s >> %s" %(command,directory,args['lims'])
+    limsJob = job("lims_notification", time="00:01:00",threads="1",\
+            log=directory + "/" +  "lims_notification.err", \
+            out=directory + "/" +  "lims_notification.out").\
+            bash(command)
+
+    for job in jobList:
+        job >> limsJob  
+
+
+
+
+
+
+

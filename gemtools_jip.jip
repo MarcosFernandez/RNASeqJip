@@ -1,0 +1,76 @@
+#!/usr/bin/env jip
+#
+# Run the full RNA Sequence pipeline
+#
+# Usage:
+#    gemtools_jip.jip -i <input> -c <cfg> -t <threads> -n <name> -o <output_dir>
+#
+# Inputs:
+#  -i, --input <input>           The first mate fastq input file
+#  -c, --cfg <cfg>               The gemtools configuration file
+#  -o, --output_dir <output_dir> The output directory
+#
+# Options:
+#  -t, --threads <threads>       The number of threads
+#  -n, --name <name>             The name of the mapping job
+
+#%begin init
+
+add_output('out_bam',sticky=True)
+add_output('out_bam_index', sticky=True)
+add_output('out_denovo_junctions', sticky=True)
+add_output('out_denovo_keys', sticky=True)
+add_output('out_filtered_bam', sticky=True)
+add_output('out_filtered_bam_index', sticky=True)
+add_output('out_filtered_counts',sticky=True)
+add_output('out_filtered_gtf_stats_json', sticky=True)
+add_output('out_filtered_gtf_stats', sticky=True)
+add_output('out_filtered',  sticky=True)
+add_output('out_filtered_stats_json',  sticky=True)
+add_output('out_filtered_stats',  sticky=True)
+add_output('out_counts',  sticky=True)
+add_output('out_gtf_junctions',  sticky=True)
+add_output('out_gtf_stats_json', sticky=True)
+add_output('out_gtf_stats', sticky=True)
+add_output('out_junctions',  sticky=True)
+add_output('out', sticky=True)
+add_output('out_stats_json', sticky=True)
+add_output('out_stats', sticky=True)
+#%end
+
+
+#%begin setup
+check_file("input")
+check_file("cfg")
+
+dirOut = args['output_dir']
+name = args['name']
+
+options ['out_bam'].set("%s/%s.bam" % (dirOut,name))
+options ['out_bam_index'].set("%s/%s.bam.bai" % (dirOut,name))
+options ['out_denovo_junctions'].set("%s/%s_denovo-index.junctions" % (dirOut,name))
+options ['out_denovo_keys'].set("%s/%s_denovo-index.junctions.keys" % (dirOut,name))
+options ['out_filtered_bam'].set("%s/%s.filtered.bam" % (dirOut,name))
+options ['out_filtered_bam_index'].set("%s/%s.filtered.bam.bai" % (dirOut,name))
+options ['out_filtered_counts'].set("%s/%s.filtered.gtf.counts.txt" % (dirOut,name))
+options ['out_filtered_gtf_stats_json'].set("%s/%s.filtered.gtf.stats.json" % (dirOut,name))
+options ['out_filtered_gtf_stats'].set("%s/%s.filtered.gtf.stats.txt" % (dirOut,name))
+options ['out_filtered'].set("%s/%s.filtered.map.gz" % (dirOut,name))
+options ['out_filtered_stats_json'].set("%s/%s.filtered.stats.json" % (dirOut,name))
+options ['out_filtered_stats'].set("%s/%s.filtered.stats.txt" % (dirOut,name))
+options ['out_counts'].set("%s/%s.gtf.counts.txt" % (dirOut,name))
+options ['out_gtf_junctions'].set("%s/%s_gtf.junctions" % (dirOut,name))
+options ['out_gtf_stats_json'].set("%s/%s.gtf.stats.json" % (dirOut,name))
+options ['out_gtf_stats'].set("%s/%s.gtf.stats.txt" % (dirOut,name))
+options ['out_junctions'].set("%s/%s.junctions" % (dirOut,name))
+options ['out'].set("%s/%s.map.gz" % (dirOut,name))
+options ['out_stats_json'].set("%s/%s.stats.json" % (dirOut,name))
+options ['out_stats'].set("%s/%s.stats.txt" % (dirOut,name))
+
+#%end
+
+
+
+gemtools rna-pipeline --load ${cfg} -t ${threads} -f ${input} -o ${output_dir}
+
+
