@@ -101,7 +101,7 @@ for sample in samplesDict.keys():
                 stats = job("flagstat", time="1h",threads="1",\
                 log=directory + "/" +  "flagstat.lane." + sample + "." + library + "." + flowcell + "." + lane + ".err", \
                 out=directory + "/" +  "flagstat.lane." + sample + "." + library + "." + flowcell + "." + lane + ".out").\
-                bash("sambamba flagstat " + bFile + " > " + flagstat, outfile=laneFlagstat)
+                bash("sambamba flagstat " + bFile + " > " + laneFlagstat, outfile=laneFlagstat)
 
                 #Sort
                 sort = job("sort", time="3h",threads="2",temp=True,\
