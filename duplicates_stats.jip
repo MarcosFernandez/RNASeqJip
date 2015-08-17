@@ -11,7 +11,6 @@
 #  -l, --lims <lims>     Lims temporary file to store the directory to update at the lims system
 #
 
-module load SAMBAMBA/0.5.4
 
 #%begin pipeline
 import os

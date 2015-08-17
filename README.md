@@ -26,7 +26,7 @@ Documentation can be found at [RnaSeq JIP Pipeline] (http://statgen.cnag.cat/rna
 
 Changelog:
 ==========
-
+    0.2 No modules loaded
     0.1 Absolut fields added.
         Lims sort vector of input parameters files to force coordination between Lane GTF stats, Lane Gene Counts and Remove duplicates files.
         Fixed error when merging mapping files with more than one mapping file per Library (more than one lane per library).

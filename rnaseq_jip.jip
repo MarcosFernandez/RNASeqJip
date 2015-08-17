@@ -21,9 +21,6 @@
 #  --noFlux                                      Not run flux quantification
 #  --noPCR                                       No run Mark Duplicates
 
-module load SAMBAMBA/0.5.4
-module load SAMTOOLS
-
 #%begin pipeline
 import os
 import os.path
