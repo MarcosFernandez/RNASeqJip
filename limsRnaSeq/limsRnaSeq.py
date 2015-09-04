@@ -17,9 +17,9 @@ class LimsRnaSeq():
         self.loadedwithId = None
         self.mapping_uri = None     #Resource uri for posting data
         self.mapping_id = None      #id for quering data
-        self.server = "http://cn503/lims_testing"  # use this for the test server 
-        #self.server = "http://lims.cnag.cat/lims_testing"  # use this for the test server 
-        #self.server = "http://lims.cnag.cat/lims" # uncomment this line  for the production lims server
+        #self.server = "http://cn503/test"  # use this for the test server 
+        #self.server = "http://cn503/lims_testing"  # use this for the test server 
+        self.server = "http://cn503/lims" # uncomment this line  for the production lims server
         self.headers = {'content-type': 'application/json'}
         self.params = {'limit': 0}
         self.rnaseqmapping_url = None
@@ -69,21 +69,21 @@ class LimsRnaSeq():
                                   'percent_protein_coding' : None,
                                   'protein_coding' : None,
                                   'percent_Mt_rRNA' : None,
-                                  'Mt_rRNA' : None,
+                                  'mt_rrna' : None,
                                   'percent_processed_transcript' : None,
                                   'processed_transcript' : None,
                                   'percent_lincRNA' : None,
-                                  'lincRNA' : None,
+                                  'lincrna' : None,
                                   'percent_pseudogene' : None,
                                   'pseudogene' : None,
                                   'percent_antisense' : None,
                                   'antisense' : None,
                                   'percent_3prime_overlapping_ncrna' : None, 
-                                  '3prime_overlapping_ncrna' : None, 
+                                  'three_prime_overlapping_ncrna' : None, 
                                   'percent_TR_V_gene' : None,
-                                  'TR_V_gene' : None,
+                                  'tr_v_gene': None,
                                   'percent_IG_V_gene' : None,
-                                  'IG_V_gene' : None,
+                                  'ig_v_gene' : None,
                                   'percent_sense_overlapping' : None,
                                   'sense_overlapping' : None,
                                   'percent_polymorphic_pseudogene' : None,
@@ -91,27 +91,27 @@ class LimsRnaSeq():
                                   'percent_sense_intronic' : None,
                                   'sense_intronic' : None,
                                   'percent_TR_C_gene' : None,
-                                  'TR_C_gene' : None,
+                                  'tr_c_gene' : None,
                                   'percent_IG_C_gene' : None,  
-                                  'IG_C_gene' : None,  
+                                  'ig_c_gene' : None,  
                                   'percent_misc_RNA' : None,
                                   'misc_RNA' : None,
                                   'percent_IG_V_pseudogene' : None,
-                                  'IG_V_pseudogene' : None,
+                                  'ig_v_pseudogene' : None,
                                   'percent_miRNA' : None,
-                                  'miRNA' : None,
+                                  'mirna' : None,
                                   'percent_IG_C_pseudogene' : None, 
-                                  'IG_C_pseudogene' : None, 
+                                  'ig_c_pseudogene' : None,
                                   'percent_snRNA' : None,
-                                  'snRNA' : None,
+                                  'snrna' : None,
                                   'percent_snoRNA' : None,
-                                  'snoRNA' : None,
+                                  'snorna' : None,
                                   'percent_TR_V_pseudogene' : None,
-                                  'TR_V_pseudogene' : None,
+                                  'tr_v_pseudogene' : None,
                                   'percent_IG_J_gene' : None,
-                                  'IG_J_gene' : None,
+                                  'ig_j_gene' : None,
                                   'percent_rRNA' : None,
-                                  'rRNA' : None,
+                                  'rrna' : None,
                                   'genes_detected' : None,
                                   'genes_25_percent_expression' : None,
                                   'percent_proper_pairs' : None,
@@ -134,8 +134,7 @@ class LimsRnaSeq():
                                   'improper_pairs' : None,
                                   'percent_duplicates' : None,
                                   'duplicates' : None,
-                                  'mapping_ids' : None,
-                                  'library' : None  
+                                  'mapping_ids' : None
         }
 
 
@@ -323,7 +322,7 @@ class LimsRnaSeq():
                        
                 row += 1
 
-        dictionary = {}      
+        dictionary = {}
         dictionary['percent_proper_pairs'] = (float(properly_paired) / float(total_reads)) * 100
         dictionary['percent_improper_pairs'] = (float(inproper_pairs) / float(total_reads)) * 100
         dictionary['percent_duplicates'] = (float(duplicates) / float(total_reads)) * 100
@@ -379,25 +378,25 @@ class LimsRnaSeq():
         self.rna_mapping_dict['percent_protein_coding'] = self.getPercentage(typeCounts["protein_coding"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['protein_coding'] = typeCounts["protein_coding"]
         self.rna_mapping_dict['percent_Mt_rRNA'] = self.getPercentage(typeCounts["Mt_rRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['Mt_rRNA'] = typeCounts["Mt_rRNA"]
+        self.rna_mapping_dict['mt_rrna'] = typeCounts["Mt_rRNA"]
         self.rna_mapping_dict['percent_processed_transcript'] = self.getPercentage(typeCounts["processed_transcript"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['processed_transcript'] = typeCounts["processed_transcript"]
         self.rna_mapping_dict['percent_lincRNA'] = self.getPercentage(typeCounts["lincRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['lincRNA'] = typeCounts["lincRNA"]
+        self.rna_mapping_dict['lincrna'] = typeCounts["lincRNA"]
         self.rna_mapping_dict['percent_pseudogene'] = self.getPercentage(typeCounts["pseudogene"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['pseudogene'] = typeCounts["pseudogene"]
         self.rna_mapping_dict['percent_antisense'] = self.getPercentage(typeCounts["antisense"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['antisense'] = typeCounts["antisense"]
         self.rna_mapping_dict['percent_3prime_overlapping_ncrna'] = self.getPercentage(typeCounts["3prime_overlapping_ncrna"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['3prime_overlapping_ncrna'] = typeCounts["3prime_overlapping_ncrna"]
+        self.rna_mapping_dict['three_prime_overlapping_ncrna'] = typeCounts["3prime_overlapping_ncrna"]
         
         if 'TR_V_gene' in typeCounts.keys():
             self.rna_mapping_dict['percent_TR_V_gene'] = self.getPercentage(typeCounts["TR_V_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['TR_V_gene'] = typeCounts["TR_V_gene"]
+            self.rna_mapping_dict['tr_v_gene'] = typeCounts["TR_V_gene"]
         
         if 'IG_V_gene' in typeCounts.keys():
             self.rna_mapping_dict['percent_IG_V_gene'] = self.getPercentage(typeCounts["IG_V_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['IG_V_gene'] = typeCounts["IG_V_gene"]
+            self.rna_mapping_dict['ig_v_gene'] = typeCounts["IG_V_gene"]
         
         self.rna_mapping_dict['percent_sense_overlapping'] = self.getPercentage(typeCounts["sense_overlapping"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['sense_overlapping'] = typeCounts["sense_overlapping"]
@@ -408,46 +407,46 @@ class LimsRnaSeq():
         
         if 'TR_C_gene' in typeCounts.keys():
             self.rna_mapping_dict['percent_TR_C_gene'] = self.getPercentage(typeCounts["TR_C_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['TR_C_gene'] = typeCounts["TR_C_gene"]
+            self.rna_mapping_dict['tr_c_gene'] = typeCounts["TR_C_gene"]
         
         if 'IG_C_gene' in typeCounts.keys():
             self.rna_mapping_dict['percent_IG_C_gene'] = self.getPercentage(typeCounts["IG_C_gene"],jsonStructure["general"]["reads"]) 
-            self.rna_mapping_dict['IG_C_gene'] = typeCounts["IG_C_gene"]
+            self.rna_mapping_dict['ig_c_gene'] = typeCounts["IG_C_gene"]
         
         self.rna_mapping_dict['percent_misc_RNA'] = self.getPercentage(typeCounts["misc_RNA"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['misc_RNA'] = typeCounts["misc_RNA"]
         
         if 'IG_V_pseudogene' in typeCounts.keys():
             self.rna_mapping_dict['percent_IG_V_pseudogene'] = self.getPercentage(typeCounts["IG_V_pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['IG_V_pseudogene'] = typeCounts["IG_V_pseudogene"]        
+            self.rna_mapping_dict['ig_v_pseudogene'] = typeCounts["IG_V_pseudogene"]        
 
         self.rna_mapping_dict['percent_miRNA'] = self.getPercentage(typeCounts["miRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['miRNA'] = typeCounts["miRNA"]
+        self.rna_mapping_dict['mirna'] = typeCounts["miRNA"]
         
 
         if 'IG_C_pseudogene' in typeCounts.keys():
             self.rna_mapping_dict['percent_IG_C_pseudogene'] = self.getPercentage(typeCounts["IG_C_pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['IG_C_pseudogene'] = typeCounts["IG_C_pseudogene"]
+            self.rna_mapping_dict['ig_c_pseudogene'] = typeCounts["IG_C_pseudogene"]
 
         
         self.rna_mapping_dict['percent_snRNA'] = self.getPercentage(typeCounts["snRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['snRNA'] = typeCounts["snRNA"]
+        self.rna_mapping_dict['snrna'] = typeCounts["snRNA"]
         self.rna_mapping_dict['percent_snoRNA'] = self.getPercentage(typeCounts["snoRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['snoRNA'] = typeCounts["snoRNA"]
+        self.rna_mapping_dict['snorna'] = typeCounts["snoRNA"]
         
 
         if 'TR_V_pseudogene' in typeCounts.keys():
             self.rna_mapping_dict['percent_TR_V_pseudogene'] = self.getPercentage(typeCounts["TR_V_pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['TR_V_pseudogene'] = typeCounts["TR_V_pseudogene"]
+            self.rna_mapping_dict['tr_v_pseudogene'] = typeCounts["TR_V_pseudogene"]
         
         if 'IG_J_gene' in typeCounts.keys():
             self.rna_mapping_dict['percent_IG_J_gene'] = self.getPercentage(typeCounts["IG_J_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['IG_J_gene'] = typeCounts["IG_J_gene"]
+            self.rna_mapping_dict['ig_j_gene'] = typeCounts["IG_J_gene"]
 
         
         if 'rRNA' in typeCounts.keys():
             self.rna_mapping_dict['percent_rRNA'] = self.getPercentage(typeCounts["rRNA"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['rRNA'] = typeCounts["rRNA"]
+            self.rna_mapping_dict['rrna'] = typeCounts["rRNA"]
         
         #2.GEN COUNTS DATA
         self.rna_mapping_dict['genes_detected'] = self.getGenesDetected(geneCounts)
@@ -481,7 +480,7 @@ class LimsRnaSeq():
         self.rnaseq_aggregate_dict['percent_improper_pairs'] = dict_library [key_name]["percent_inproper_pairs"]
         self.rnaseq_aggregate_dict['improper_pairs'] = dict_library [key_name]["inproper_pairs"]
         self.rnaseq_aggregate_dict['percent_duplicates'] = dict_library [key_name]["percent_duplicates"]
-        self.rnaseq_aggregate_dict['duplicates_reads'] = dict_library [key_name]["duplicates_reads"]
+        self.rnaseq_aggregate_dict['duplicates'] = dict_library [key_name]["duplicates_reads"]
 
        
     def queryDataBase(self):
