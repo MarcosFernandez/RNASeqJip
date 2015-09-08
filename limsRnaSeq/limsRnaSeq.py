@@ -17,9 +17,9 @@ class LimsRnaSeq():
         self.loadedwithId = None
         self.mapping_uri = None     #Resource uri for posting data
         self.mapping_id = None      #id for quering data
-        self.server = "http://cn503/test"  # use this for the test server 
+        #self.server = "http://cn503/test"  # use this for the test server 
         #self.server = "http://cn503/lims_testing"  # use this for the test server 
-        #self.server = "http://cn503/lims" # uncomment this line  for the production lims server
+        self.server = "http://cn503/lims" # uncomment this line  for the production lims server
         self.headers = {'content-type': 'application/json'}
         self.params = {'limit': 0}
         self.rnaseqmapping_url = None
