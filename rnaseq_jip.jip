@@ -3,12 +3,14 @@
 # Run the full RNA Sequence pipeline
 #
 # usage:
-#     rnaseq_jip.jip -c <cfg> -i <input>... -o <mapping_dir> -q <quantification_dir> -a <annotation> -t <threads> [-p <prefix>] [-d] [-s] [-l <lims>] [--noFlux] [--noPCR]
+#     rnaseq_jip.jip -c <cfg> -i <input>... -o <mapping_dir> [-q <quantification_dir>] -a <annotation> -t <threads> [-p <prefix>] [-d] [-s] [-l <lims>] [--noFlux] [--noPCR]
 #
 # Inputs:
 #  -i, --input <input>                           The first mate fastq input file
 #  -c, --cfg <cfg>                               The gemtools config file
 #  -a, --annotation <annotation>                 Explicitly set the annotation
+#
+# Outputs:
 #  -o, --mapping_dir <mapping_dir>               Output directory
 #  -q, --quantification_dir <quantification_dir> Quantification directory
 #
