@@ -383,8 +383,11 @@ class LimsRnaSeq():
         self.rna_mapping_dict['processed_transcript'] = typeCounts["processed_transcript"]
         self.rna_mapping_dict['percent_lincRNA'] = self.getPercentage(typeCounts["lincRNA"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['lincrna'] = typeCounts["lincRNA"]
-        self.rna_mapping_dict['percent_pseudogene'] = self.getPercentage(typeCounts["pseudogene"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['pseudogene'] = typeCounts["pseudogene"]
+        
+        if 'pseudogene' in typeCounts.keys():
+            self.rna_mapping_dict['percent_pseudogene'] = self.getPercentage(typeCounts["pseudogene"],jsonStructure["general"]["reads"])
+            self.rna_mapping_dict['pseudogene'] = typeCounts["pseudogene"]
+        
         self.rna_mapping_dict['percent_antisense'] = self.getPercentage(typeCounts["antisense"],jsonStructure["general"]["reads"])
         self.rna_mapping_dict['antisense'] = typeCounts["antisense"]
         self.rna_mapping_dict['percent_3prime_overlapping_ncrna'] = self.getPercentage(typeCounts["3prime_overlapping_ncrna"],jsonStructure["general"]["reads"])
