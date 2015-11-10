@@ -673,9 +673,6 @@ laneGtfStats = sorted(glob.glob(args.directory + gtf_stats_search))
 laneGeneCounts = sorted(glob.glob(args.directory + gtf_counts_txt))
 rmDupsFiles = sorted(glob.glob(args.directory + "/*.rmdup.lane.flagstat"))
 
-print laneGtfStats
-print laneGeneCounts
-
 rmDupsLibrary = {}
 
 with open(args.directory + "/duplicates.json") as json_file:
