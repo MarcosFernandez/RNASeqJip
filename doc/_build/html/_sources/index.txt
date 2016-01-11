@@ -137,22 +137,24 @@ Manage all the pipeline steps. gemtools mapping, flux-capacitor quantification a
 
 .. note::
 
-    Lims Updating
+    **Uploading RNAseq Results to Lims CNAG system.**
+                                            
+
+    **1. Uploading through Lims Daemon** 
 
     ``-l`` Allows you to configure a temporary file to add the mapping path. The goal is to notify to a `lims daemon system`_ that there is data waiting to be upload to lims database.
        
     You should select the same temporary file digested by the `lims daemon system`_.
 
+    **2. Uploading through limsRnaSeq.py**
+
+    You can upload RNA seq data to the lims database without the lims daemon system using ``limsRnaSeq.py``.
+
+        Just run it as:
+
+            ``limsRnaSeq.py -d /mapping_path/``
+
+            or ``limsRnaSeq.py -d /mapping_path/ --no_filter``    in case you do not want to use bam filtered files.
+    
+
 .. _lims daemon system: http://statgen.cnag.cat/daemon_rna_lims/
-
-   
-
-
-
-
-
-
-
-
-
-

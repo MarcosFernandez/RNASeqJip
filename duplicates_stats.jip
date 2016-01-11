@@ -123,7 +123,7 @@ for sample in samplesDict.keys():
       
             #MarkDuplicates
             dups = job("rmDup", time="3h",threads="2",\
-            log=directory + "/" +  "rmdup." + sample + "." + library + ".err",temp=True, \
+            log=directory + "/" +  "rmdup." + sample + "." + library + ".err",\
             out=directory + "/" +  "rmdup." + sample + "." + library + ".out").\
             bash("sambamba markdup --tmpdir=$TMPDIR -t 2 " +  bamToCheck + " " + bamDuplicates, outfile=bamDuplicates) 
 
@@ -151,7 +151,7 @@ for sample in samplesDict.keys():
         else:     
             #MarkDuplicates
             dups = job("rmDup", time="3h",threads="2",\
-            log=directory + "/" +  "rmdup." + sample + "." + library + ".err",temp=True, \
+            log=directory + "/" +  "rmdup." + sample + "." + library + ".err", \
             out=directory + "/" +  "rmdup." + sample + "." + library + ".out").\
             bash("sambamba markdup --tmpdir=$TMPDIR -t 2 " +  bamFiles[0] + " " + bamDuplicates, outfile=bamDuplicates) 
 

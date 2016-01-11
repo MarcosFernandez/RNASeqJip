@@ -116,9 +116,19 @@ perfom <a class="reference external" href="http://lomereiter.github.io/sambamba/
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Lims Updating</p>
+<p><strong>Uploading RNAseq Results to Lims CNAG system.</strong></p>
+<p><strong>1. Uploading through Lims Daemon</strong></p>
 <p><tt class="docutils literal"><span class="pre">-l</span></tt> Allows you to configure a temporary file to add the mapping path. The goal is to notify to a <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a> that there is data waiting to be upload to lims database.</p>
-<p class="last">You should select the same temporary file digested by the <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a>.</p>
+<p>You should select the same temporary file digested by the <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a>.</p>
+<p><strong>2. Uploading through limsRnaSeq.py</strong></p>
+<p>You can upload RNA seq data to the lims database without the lims daemon system using <tt class="docutils literal"><span class="pre">limsRnaSeq.py</span></tt>.</p>
+<blockquote class="last">
+<div><p>Just run it as:</p>
+<blockquote>
+<div><p><tt class="docutils literal"><span class="pre">limsRnaSeq.py</span> <span class="pre">-d</span> <span class="pre">/mapping_path/</span></tt></p>
+<p>or <tt class="docutils literal"><span class="pre">limsRnaSeq.py</span> <span class="pre">-d</span> <span class="pre">/mapping_path/</span> <span class="pre">--no_filter</span></tt>    in case you do not want to use bam filtered files.</p>
+</div></blockquote>
+</div></blockquote>
 </div>
 </div>
 </div>

@@ -333,7 +333,12 @@ class LimsRnaSeq():
         dictionary['duplicates'] = duplicates
         
         return dictionary
-        
+      
+    def checkAndLoad(self,concept,percent_concept,mapping_concept,typeCountsDict,rna_mapping_dict,total):
+        ''' Check in type counts the existance of the concept to be uploaded'''
+        if concept in typeCountsDict.keys():
+            rna_mapping_dict[percent_concept] = self.getPercentage(typeCountsDict[concept],total)
+            rna_mapping_dict[mapping_concept] = typeCountsDict[concept]  
 
     def parseRawData(self,jsonFile = None, geneCounts = None, flagstatsFile = None,configuration=None):
         ''' Parsing JSON Structure '''
@@ -375,82 +380,42 @@ class LimsRnaSeq():
         self.rna_mapping_dict['intergenic'] = total_not_annotated
 
         typeCounts = jsonStructure["type_counts"]
+        total_number_reads = jsonStructure["general"]["reads"]
 
-        self.rna_mapping_dict['percent_protein_coding'] = self.getPercentage(typeCounts["protein_coding"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['protein_coding'] = typeCounts["protein_coding"]
-        self.rna_mapping_dict['percent_Mt_rRNA'] = self.getPercentage(typeCounts["Mt_rRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['mt_rrna'] = typeCounts["Mt_rRNA"]
-        self.rna_mapping_dict['percent_processed_transcript'] = self.getPercentage(typeCounts["processed_transcript"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['processed_transcript'] = typeCounts["processed_transcript"]
-        self.rna_mapping_dict['percent_lincRNA'] = self.getPercentage(typeCounts["lincRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['lincrna'] = typeCounts["lincRNA"]
-        
-        if 'pseudogene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_pseudogene'] = self.getPercentage(typeCounts["pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['pseudogene'] = typeCounts["pseudogene"]
-        
-        self.rna_mapping_dict['percent_antisense'] = self.getPercentage(typeCounts["antisense"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['antisense'] = typeCounts["antisense"]
-        self.rna_mapping_dict['percent_3prime_overlapping_ncrna'] = self.getPercentage(typeCounts["3prime_overlapping_ncrna"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['three_prime_overlapping_ncrna'] = typeCounts["3prime_overlapping_ncrna"]
-        
-        if 'TR_V_gene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_TR_V_gene'] = self.getPercentage(typeCounts["TR_V_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['tr_v_gene'] = typeCounts["TR_V_gene"]
-        
-        if 'IG_V_gene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_IG_V_gene'] = self.getPercentage(typeCounts["IG_V_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['ig_v_gene'] = typeCounts["IG_V_gene"]
-        
-        self.rna_mapping_dict['percent_sense_overlapping'] = self.getPercentage(typeCounts["sense_overlapping"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['sense_overlapping'] = typeCounts["sense_overlapping"]
-        self.rna_mapping_dict['percent_polymorphic_pseudogene'] = self.getPercentage(typeCounts["polymorphic_pseudogene"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['polymorphic_pseudogene'] = typeCounts["polymorphic_pseudogene"]
-        self.rna_mapping_dict['percent_sense_intronic'] = self.getPercentage(typeCounts["sense_intronic"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['sense_intronic'] = typeCounts["sense_intronic"]
-        
-        if 'TR_C_gene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_TR_C_gene'] = self.getPercentage(typeCounts["TR_C_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['tr_c_gene'] = typeCounts["TR_C_gene"]
-        
-        if 'IG_C_gene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_IG_C_gene'] = self.getPercentage(typeCounts["IG_C_gene"],jsonStructure["general"]["reads"]) 
-            self.rna_mapping_dict['ig_c_gene'] = typeCounts["IG_C_gene"]
-        
-        self.rna_mapping_dict['percent_misc_RNA'] = self.getPercentage(typeCounts["misc_RNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['misc_RNA'] = typeCounts["misc_RNA"]
-        
-        if 'IG_V_pseudogene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_IG_V_pseudogene'] = self.getPercentage(typeCounts["IG_V_pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['ig_v_pseudogene'] = typeCounts["IG_V_pseudogene"]        
-
-        self.rna_mapping_dict['percent_miRNA'] = self.getPercentage(typeCounts["miRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['mirna'] = typeCounts["miRNA"]
-        
-
-        if 'IG_C_pseudogene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_IG_C_pseudogene'] = self.getPercentage(typeCounts["IG_C_pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['ig_c_pseudogene'] = typeCounts["IG_C_pseudogene"]
+        self.checkAndLoad('protein_coding','percent_protein_coding','protein_coding',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('Mt_rRNA','percent_Mt_rRNA','mt_rrna',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('processed_transcript','percent_processed_transcript','processed_transcript',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('lincRNA','percent_lincRNA','lincrna',typeCounts,self.rna_mapping_dict,total_number_reads)
 
         
-        self.rna_mapping_dict['percent_snRNA'] = self.getPercentage(typeCounts["snRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['snrna'] = typeCounts["snRNA"]
-        self.rna_mapping_dict['percent_snoRNA'] = self.getPercentage(typeCounts["snoRNA"],jsonStructure["general"]["reads"])
-        self.rna_mapping_dict['snorna'] = typeCounts["snoRNA"]
-        
+        self.checkAndLoad('pseudogene','percent_pseudogene','pseudogene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        #if 'pseudogene' in typeCounts.keys():
+        #    self.rna_mapping_dict['percent_pseudogene'] = self.getPercentage(typeCounts["pseudogene"],jsonStructure["general"]["reads"])
+        #    self.rna_mapping_dict['pseudogene'] = typeCounts["pseudogene"]
 
-        if 'TR_V_pseudogene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_TR_V_pseudogene'] = self.getPercentage(typeCounts["TR_V_pseudogene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['tr_v_pseudogene'] = typeCounts["TR_V_pseudogene"]
-        
-        if 'IG_J_gene' in typeCounts.keys():
-            self.rna_mapping_dict['percent_IG_J_gene'] = self.getPercentage(typeCounts["IG_J_gene"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['ig_j_gene'] = typeCounts["IG_J_gene"]
+        self.checkAndLoad('antisense','percent_antisense','antisense',typeCounts,self.rna_mapping_dict,total_number_reads)
+    
+        self.checkAndLoad('three_prime_overlapping_ncrna','percent_3prime_overlapping_ncrna','three_prime_overlapping_ncrna',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('TR_V_gene','percent_TR_V_gene','tr_v_gene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('IG_V_gene','percent_IG_V_gene','ig_v_gene',typeCounts,self.rna_mapping_dict,total_number_reads)        
+       
+        self.checkAndLoad('sense_overlapping','percent_sense_overlapping','sense_overlapping',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('polymorphic_pseudogene','percent_polymorphic_pseudogene','polymorphic_pseudogene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('sense_intronic','percent_sense_intronic','sense_intronic',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('TR_C_gene','percent_TR_C_gene','tr_c_gene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('IG_C_gene','percent_IG_C_gene','ig_c_gene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('misc_RNA','percent_misc_RNA','misc_RNA',typeCounts,self.rna_mapping_dict,total_number_reads)
 
+        self.checkAndLoad('IG_V_pseudogene','percent_IG_V_pseudogene','ig_v_pseudogene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('miRNA','percent_miRNA','mirna',typeCounts,self.rna_mapping_dict,total_number_reads)   
+        self.checkAndLoad('IG_C_pseudogene','percent_IG_C_pseudogene','ig_c_pseudogene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('snRNA','percent_snRNA','snrna',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('snoRNA','percent_snoRNA','snorna',typeCounts,self.rna_mapping_dict,total_number_reads)
         
-        if 'rRNA' in typeCounts.keys():
-            self.rna_mapping_dict['percent_rRNA'] = self.getPercentage(typeCounts["rRNA"],jsonStructure["general"]["reads"])
-            self.rna_mapping_dict['rrna'] = typeCounts["rRNA"]
+        self.checkAndLoad('TR_V_pseudogene','percent_TR_V_pseudogene','tr_v_pseudogene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('IG_J_gene','percent_IG_J_gene','ig_j_gene',typeCounts,self.rna_mapping_dict,total_number_reads)
+        self.checkAndLoad('rRNA','percent_rRNA','rrna',typeCounts,self.rna_mapping_dict,total_number_reads)
+
         
         #2.GEN COUNTS DATA
         self.rna_mapping_dict['genes_detected'] = self.getGenesDetected(geneCounts)
