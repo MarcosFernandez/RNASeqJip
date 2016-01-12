@@ -110,7 +110,7 @@ if not args['noPCR']:
         if not args['noFilter']:
             duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims'])
         else: 
-            duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims'],noFilter)
+            duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims'],noFilter=True)
 
 
     
