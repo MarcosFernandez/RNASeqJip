@@ -2,13 +2,14 @@
 # Run MarkDuplicates to generate Duplication stats from a set of BAM alignment files with the name format. 
 #
 # Usage:
-#    duplicates_stats.jip -b <bam>... [-l <lims>]
+#    duplicates_stats.jip -b <bam>... [-l <lims>] [--noFilter]
 #
 # Inputs:
 #  -b, --bam <bam>...    List of bam input files
 #
 # Options:
 #  -l, --lims <lims>     Lims temporary file to store the directory to update at the lims system
+#  --noFilter            Do not used filtered gem mapped files for building LIMS stats
 #
 
 
@@ -180,7 +181,13 @@ for sample in samplesDict.keys():
 
 if args['lims']:
     command = "chmod 770 %s;" %(args['lims'])
-    command = "%s echo %s >> %s" %(command,directory,args['lims'])
+
+    if not args['noFilter']:
+        command = "%s echo %s filtered>> %s" %(command,directory,args['lims'])
+    else:
+        command = "%s echo %s nofiltered>> %s" %(command,directory,args['lims'])
+
+
     limsJob = job("lims_notification", time="00:01:00",threads="1",\
             log=directory + "/" +  "lims_notification.err", \
             out=directory + "/" +  "lims_notification.out").\

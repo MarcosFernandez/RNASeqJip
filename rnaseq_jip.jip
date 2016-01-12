@@ -3,7 +3,7 @@
 # Run the full RNA Sequence pipeline
 #
 # usage:
-#     rnaseq_jip.jip -c <cfg> -i <input>... -o <mapping_dir> [-q <quantification_dir>] -a <annotation> -t <threads> [-p <prefix>] [-d] [-s] [-l <lims>] [--noFlux] [--noPCR]
+#     rnaseq_jip.jip -c <cfg> -i <input>... -o <mapping_dir> [-q <quantification_dir>] -a <annotation> -t <threads> [-p <prefix>] [-d] [-s] [-l <lims>] [--noFlux] [--noPCR] [--noFilter]
 #
 # Inputs:
 #  -i, --input <input>                           The first mate fastq input file
@@ -22,6 +22,7 @@
 #  -l, --lims <lims>                             Lims temporary file to store the mapping directory which are located the data to be updated at lims
 #  --noFlux                                      Not run flux quantification
 #  --noPCR                                       No run Mark Duplicates
+#  --noFilter                                    Do not used filtered gem mapped files for building LIMS stats
 
 #%begin pipeline
 import os
@@ -106,7 +107,10 @@ if not args['noPCR']:
     if not args['lims']:
         duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList) 
     else:
-        duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims']) 
+        if not args['noFilter']:
+            duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims'])
+        else: 
+            duplicatesJob = job('duplicates').run('duplicates_stats',bam=bamMappingList,lims=args['lims'],noFilter)
 
 
     

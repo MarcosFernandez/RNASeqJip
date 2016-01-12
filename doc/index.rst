@@ -133,7 +133,8 @@ Manage all the pipeline steps. gemtools mapping, flux-capacitor quantification a
 
     --noFlux    Do not run flux-capacitor quantification.
     --noPCR     Do not run PCR Duplicates.
-    -l          File to store the mapping directory to upload the data to a lims system
+    -l          File to store the mapping directory to upload the data to a lims system.
+    --noFilter  Do not upload filtered bam stats to lims system.
 
 .. note::
 
