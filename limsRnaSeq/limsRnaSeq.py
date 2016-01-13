@@ -137,6 +137,23 @@ class LimsRnaSeq():
                                   'mapping_ids' : None
         }
 
+        self.runConfig()
+
+    def runConfig(self):
+        """ Check for config file exitance and get User and Key """
+        try:
+            username = ""
+            key = "" 
+            with open('config') as file_config:
+                for line in file_config:
+                    cleanLine = line.strip('\n') 
+                    fields = re.split(' ',cleanLines)                   
+                    username = fields[0]
+                    key = fields[1]   
+
+            self.headers = {'content-type': 'application/json', 'Authorization':'ApiKey %s:%s' %(username,key)}   
+        except IOError as e:
+            print "Unable to open config file. You need a config file to have acces to lims database. Write in this file a username and a password." 
 
     def delStats(self):
         """ Reset stats values """
@@ -386,13 +403,8 @@ class LimsRnaSeq():
         self.checkAndLoad('Mt_rRNA','percent_Mt_rRNA','mt_rrna',typeCounts,self.rna_mapping_dict,total_number_reads)
         self.checkAndLoad('processed_transcript','percent_processed_transcript','processed_transcript',typeCounts,self.rna_mapping_dict,total_number_reads)
         self.checkAndLoad('lincRNA','percent_lincRNA','lincrna',typeCounts,self.rna_mapping_dict,total_number_reads)
-
-        
+      
         self.checkAndLoad('pseudogene','percent_pseudogene','pseudogene',typeCounts,self.rna_mapping_dict,total_number_reads)
-        #if 'pseudogene' in typeCounts.keys():
-        #    self.rna_mapping_dict['percent_pseudogene'] = self.getPercentage(typeCounts["pseudogene"],jsonStructure["general"]["reads"])
-        #    self.rna_mapping_dict['pseudogene'] = typeCounts["pseudogene"]
-
         self.checkAndLoad('antisense','percent_antisense','antisense',typeCounts,self.rna_mapping_dict,total_number_reads)
     
         self.checkAndLoad('three_prime_overlapping_ncrna','percent_3prime_overlapping_ncrna','three_prime_overlapping_ncrna',typeCounts,self.rna_mapping_dict,total_number_reads)

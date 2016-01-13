@@ -115,21 +115,40 @@ perfom <a class="reference external" href="http://lomereiter.github.io/sambamba/
 -l          File to store the mapping directory to upload the data to a lims system.
 --noFilter  Do not upload filtered bam stats to lims system.</pre>
 </div>
+</div>
+<div class="section" id="uploading-rnaseq-results-to-lims-cnag-system">
+<h2>5. Uploading RNAseq Results to Lims CNAG system<a class="headerlink" href="#uploading-rnaseq-results-to-lims-cnag-system" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="uploading-through-lims-daemon">
+<h3>5.1. Uploading through Lims Daemon<a class="headerlink" href="#uploading-through-lims-daemon" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Parameter <tt class="docutils literal"><span class="pre">-l</span></tt> form `` rnaseq_jip.jip `` Allows you to configure a temporary file to add the mapping path. The goal is to notify to a <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a> that there is data waiting to be upload to lims database.</p>
+<p>You should select the same temporary file digested by the <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a>.</p>
+</div></blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p><strong>Uploading RNAseq Results to Lims CNAG system.</strong></p>
-<p><strong>1. Uploading through Lims Daemon</strong></p>
-<p><tt class="docutils literal"><span class="pre">-l</span></tt> Allows you to configure a temporary file to add the mapping path. The goal is to notify to a <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a> that there is data waiting to be upload to lims database.</p>
-<p>You should select the same temporary file digested by the <a class="reference external" href="http://statgen.cnag.cat/daemon_rna_lims/">lims daemon system</a>.</p>
-<p><strong>2. Uploading through limsRnaSeq.py</strong></p>
-<p>You can upload RNA seq data to the lims database without the lims daemon system using <tt class="docutils literal"><span class="pre">limsRnaSeq.py</span></tt>.</p>
-<blockquote class="last">
+<p>To upload data in Lims CNAG system you need a user and a key. This user and key should be in a file called <strong>config</strong> and has to be located at the same directory where the daemon rna scripts are located.
+The format of this file has to be:</p>
+<p class="last"><tt class="docutils literal"><span class="pre">username</span> <span class="pre">key</span></tt></p>
+</div>
+</div>
+<div class="section" id="uploading-through-limsrnaseq-py">
+<h3>5.2. Uploading through limsRnaSeq.py<a class="headerlink" href="#uploading-through-limsrnaseq-py" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>You can upload RNA seq data to the lims database without the lims daemon system using <tt class="docutils literal"><span class="pre">limsRnaSeq.py</span></tt>.</p>
+<blockquote>
 <div><p>Just run it as:</p>
 <blockquote>
 <div><p><tt class="docutils literal"><span class="pre">limsRnaSeq.py</span> <span class="pre">-d</span> <span class="pre">/mapping_path/</span></tt></p>
 <p>or <tt class="docutils literal"><span class="pre">limsRnaSeq.py</span> <span class="pre">-d</span> <span class="pre">/mapping_path/</span> <span class="pre">--no_filter</span></tt>    in case you do not want to use bam filtered files.</p>
 </div></blockquote>
 </div></blockquote>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>To upload data in Lims CNAG system you need a user and a key. This user and key should be in a file called <strong>config</strong> and has to be located at the same directory where the <tt class="docutils literal"><span class="pre">limsRnaSeq.py</span></tt> script is located.
+The format of this file has to be:</p>
+<p class="last"><tt class="docutils literal"><span class="pre">username</span> <span class="pre">key</span></tt></p>
+</div>
 </div>
 </div>
 </div>
@@ -155,6 +174,11 @@ perfom <a class="reference external" href="http://lomereiter.github.io/sambamba/
 <li><a class="reference internal" href="#file-name-pattern">2. File name pattern</a></li>
 <li><a class="reference internal" href="#create-configuration-file">3. Create configuration file</a></li>
 <li><a class="reference internal" href="#run-rnaseq-jip-pipeline">4. Run RnaSeq JIP Pipeline</a></li>
+<li><a class="reference internal" href="#uploading-rnaseq-results-to-lims-cnag-system">5. Uploading RNAseq Results to Lims CNAG system</a><ul>
+<li><a class="reference internal" href="#uploading-through-lims-daemon">5.1. Uploading through Lims Daemon</a></li>
+<li><a class="reference internal" href="#uploading-through-limsrnaseq-py">5.2. Uploading through limsRnaSeq.py</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

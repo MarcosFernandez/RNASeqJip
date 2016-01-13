@@ -136,18 +136,30 @@ Manage all the pipeline steps. gemtools mapping, flux-capacitor quantification a
     -l          File to store the mapping directory to upload the data to a lims system.
     --noFilter  Do not upload filtered bam stats to lims system.
 
-.. note::
 
-    **Uploading RNAseq Results to Lims CNAG system.**
-                                            
+5. Uploading RNAseq Results to Lims CNAG system
+-----------------------------------------------
 
-    **1. Uploading through Lims Daemon** 
+5.1. Uploading through Lims Daemon
+`````````````````````````````````` 
 
-    ``-l`` Allows you to configure a temporary file to add the mapping path. The goal is to notify to a `lims daemon system`_ that there is data waiting to be upload to lims database.
+    Parameter ``-l`` form `` rnaseq_jip.jip `` Allows you to configure a temporary file to add the mapping path. The goal is to notify to a `lims daemon system`_ that there is data waiting to be upload to lims database.
        
     You should select the same temporary file digested by the `lims daemon system`_.
 
-    **2. Uploading through limsRnaSeq.py**
+.. _lims daemon system: http://statgen.cnag.cat/daemon_rna_lims/
+
+.. note::
+
+    To upload data in Lims CNAG system you need a user and a key. This user and key should be in a file called **config** and has to be located at the same directory where the daemon rna scripts are located.
+    The format of this file has to be:
+
+    ``username key``
+
+
+
+5.2. Uploading through limsRnaSeq.py
+````````````````````````````````````
 
     You can upload RNA seq data to the lims database without the lims daemon system using ``limsRnaSeq.py``.
 
@@ -156,6 +168,14 @@ Manage all the pipeline steps. gemtools mapping, flux-capacitor quantification a
             ``limsRnaSeq.py -d /mapping_path/``
 
             or ``limsRnaSeq.py -d /mapping_path/ --no_filter``    in case you do not want to use bam filtered files.
+
+.. note::
+
+    To upload data in Lims CNAG system you need a user and a key. This user and key should be in a file called **config** and has to be located at the same directory where the ``limsRnaSeq.py`` script is located.
+    The format of this file has to be:
+
+    ``username key``
+
     
 
-.. _lims daemon system: http://statgen.cnag.cat/daemon_rna_lims/
+
