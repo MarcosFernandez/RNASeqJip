@@ -143,7 +143,7 @@ Manage all the pipeline steps. gemtools mapping, flux-capacitor quantification a
 5.1. Uploading through Lims Daemon
 `````````````````````````````````` 
 
-    Parameter ``-l`` form `` rnaseq_jip.jip `` Allows you to configure a temporary file to add the mapping path. The goal is to notify to a `lims daemon system`_ that there is data waiting to be upload to lims database.
+    Parameter ``-l`` from ``rnaseq_jip.jip`` allows you to configure a temporary file to add the mapping path. The goal is to notify to a `lims daemon system`_ that there is data waiting to be upload to lims database.
        
     You should select the same temporary file digested by the `lims daemon system`_.
 
