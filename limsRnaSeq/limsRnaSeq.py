@@ -144,16 +144,19 @@ class LimsRnaSeq():
         try:
             username = ""
             key = "" 
-            with open('config') as file_config:
+            configFile = os.path.dirname(os.path.realpath(__file__)) + "/config"
+            with open(configFile) as file_config:
                 for line in file_config:
                     cleanLine = line.strip('\n') 
-                    fields = re.split(' ',cleanLines)                   
+                    fields = re.split(' ',cleanLine)                   
                     username = fields[0]
-                    key = fields[1]   
+                    key = fields[1]
+     
 
             self.headers = {'content-type': 'application/json', 'Authorization':'ApiKey %s:%s' %(username,key)}   
         except IOError as e:
             print "Unable to open config file. You need a config file to have acces to lims database. Write in this file a username and a password." 
+            exit()
 
     def delStats(self):
         """ Reset stats values """
