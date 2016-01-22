@@ -70,7 +70,7 @@ options ['out_stats'].set("%s/%s.stats.txt" % (dirOut,name))
 #%end
 
 
-
+cd ${output_dir}
 gemtools rna-pipeline --load ${cfg} -t ${threads} -f ${input} -o ${output_dir}
 
 
