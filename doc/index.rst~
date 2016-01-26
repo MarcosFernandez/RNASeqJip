@@ -110,7 +110,7 @@ Create a configuration file with general parameters.
 
 .. note::
     
-    **Index Reference and annotation.**
+    Index Reference and annotation.
 
     ``genome.gem``:  Indexed reference for the gem mapper.
 
@@ -121,7 +121,7 @@ Create a configuration file with general parameters.
 
 .. warning::
 
-    **Lims CNAG System**
+    **Lims CNAG System***
 
     If you are going to upload your RNASeq results to the lims CNAG system then *.config.gt* file should be located at the mapping directory.
 

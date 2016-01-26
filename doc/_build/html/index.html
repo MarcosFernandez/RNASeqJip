@@ -95,14 +95,19 @@ perfom <a class="reference external" href="http://lomereiter.github.io/sambamba/
 <div class="section" id="create-configuration-file">
 <h2>3. Create configuration file<a class="headerlink" href="#create-configuration-file" title="Permalink to this headline">¶</a></h2>
 <p>Create a configuration file with general parameters.</p>
-<div class="highlight-python"><pre>gemtools rna-pipeline -q 33 -a annotation.gtf -r annotation.gtf.junctions.gem -i genome.gem -o /directory_output/  --save config.gt</pre>
+<div class="highlight-python"><pre>gemtools rna-pipeline -q 33 -a annotation.gtf -r annotation.gtf.junctions.gem -i genome.gem -o /directory_mapping_output/  --save /directory_mapping_output/.config.gt</pre>
 </div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p>Index Reference and annotation.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><strong>Index Reference and annotation.</strong></p>
 <p><tt class="docutils literal"><span class="pre">genome.gem</span></tt>:  Indexed reference for the gem mapper.</p>
 <p><tt class="docutils literal"><span class="pre">annotation.gtf.junctions.gem</span></tt>: Indexed annotation for the gem mapper.</p>
 <p class="last">To perform the indexing of the assembly reference and its annotation you should follow steps 2 and 3 from the <a class="reference external" href="http://gemtools.github.io/docs/rna_pipeline.html">RNA Pipeline Quickstart</a>.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p><strong>Lims CNAG System</strong></p>
+<p class="last">If you are going to upload your RNASeq results to the lims CNAG system then <em>.config.gt</em> file should be located at the mapping directory.</p>
 </div>
 </div>
 <div class="section" id="run-rnaseq-jip-pipeline">

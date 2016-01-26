@@ -106,17 +106,24 @@ Create a configuration file with general parameters.
 
 ::
 
-    gemtools rna-pipeline -q 33 -a annotation.gtf -r annotation.gtf.junctions.gem -i genome.gem -o /directory_output/  --save config.gt
+    gemtools rna-pipeline -q 33 -a annotation.gtf -r annotation.gtf.junctions.gem -i genome.gem -o /directory_mapping_output/  --save /directory_mapping_output/.config.gt
 
-.. warning::
+.. note::
     
-    Index Reference and annotation.
+    **Index Reference and annotation.**
 
     ``genome.gem``:  Indexed reference for the gem mapper.
 
     ``annotation.gtf.junctions.gem``: Indexed annotation for the gem mapper. 
 
     To perform the indexing of the assembly reference and its annotation you should follow steps 2 and 3 from the `RNA Pipeline Quickstart`_.
+
+
+.. warning::
+
+    **Lims CNAG System**
+
+    If you are going to upload your RNASeq results to the lims CNAG system then *.config.gt* file should be located at the mapping directory.
 
 
 .. _RNA Pipeline Quickstart: http://gemtools.github.io/docs/rna_pipeline.html
